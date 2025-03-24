@@ -1,0 +1,1 @@
+web: gunicorn kerala_blog.wsgi:application 

@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'whitenoise.runserver_nostatic',  # Add whitenoise
+    'cloudinary_storage',  # Add this before django.contrib.staticfiles
 ]
 
 MIDDLEWARE = [

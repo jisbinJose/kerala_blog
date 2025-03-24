@@ -2,35 +2,397 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
+    overflow-x: hidden;
+    background-color: #f8f9fa;
 }
 
-/* Blog post styles */
+/* Animated background for index page */
+.index-background {
+    position: relative;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('../images/kerala-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: white;
+    padding: 2rem 0;
+}
+
+.index-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(13, 110, 253, 0.2), rgba(255, 255, 255, 0.1));
+    z-index: 1;
+}
+
+/* Enhanced animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive typography with animations */
+h1, h2, h3, h4, h5, h6 {
+    word-wrap: break-word;
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* Enhanced card styles */
+.card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 1.5rem;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Enhanced navbar */
+.navbar {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 0.75rem 0;
+    background: rgba(13, 110, 253, 0.95) !important;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+    background: rgba(13, 110, 253, 0.98) !important;
+    padding: 0.5rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    animation: slideIn 0.5s ease-out;
+}
+
+.nav-link {
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+    width: 80%;
+}
+
+/* Profile picture styles */
+.profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    margin-right: 8px;
+    transition: all 0.3s ease;
+}
+
+.profile-pic:hover {
+    transform: scale(1.1);
+    border-color: white;
+}
+
+/* Large profile picture for blogger cards */
+.profile-pic-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.profile-pic-large {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.profile-pic-large:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.profile-dropdown {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+}
+
+.profile-dropdown .profile-pic {
+    width: 40px;
+    height: 40px;
+}
+
+.profile-info {
+    margin-left: 10px;
+}
+
+.profile-info .username {
+    font-weight: 600;
+    color: #333;
+}
+
+.profile-info .role {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Enhanced dropdown menu */
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-item i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+.dropdown-item:hover {
+    background: rgba(13, 110, 253, 0.1);
+    transform: translateX(5px);
+}
+
+.dropdown-divider {
+    margin: 0.5rem 0;
+}
+
+/* Enhanced jumbotron */
+.jumbotron {
+    background: rgba(248, 249, 250, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 3rem 2rem;
+    backdrop-filter: blur(10px);
+    animation: fadeIn 1s ease-out;
+}
+
+.jumbotron h1 {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Enhanced buttons */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+    border: none;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+    animation: pulse 1s infinite;
+}
+
+.btn-outline-primary {
+    border-width: 2px;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2);
+}
+
+/* Enhanced blog post styles */
 .blog-post {
     max-width: 800px;
     margin: 0 auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    animation: fadeIn 0.8s ease-out;
 }
 
 .blog-meta {
     color: #666;
+    font-size: 0.9rem;
 }
 
 .blog-content {
     font-size: 1.1em;
+    line-height: 1.8;
+}
+
+.blog-image {
+    margin: 2rem 0;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .blog-image img {
-    max-width: 100%;
+    width: 100%;
     height: auto;
+    transition: transform 0.5s ease;
 }
 
-/* Card hover effects */
-.card {
-    transition: transform 0.3s ease-in-out;
+.blog-image:hover img {
+    transform: scale(1.05);
 }
 
-.card:hover {
-    transform: translateY(-5px);
+/* Enhanced footer */
+footer {
+    background: rgba(248, 249, 250, 0.95) !important;
+    backdrop-filter: blur(10px);
+    padding: 2rem 0;
+    margin-top: 4rem;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Enhanced form styles */
+.form-control {
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Enhanced table styles */
+.table {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.table thead th {
+    background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+    color: white;
+    border: none;
+    padding: 1rem;
+}
+
+/* Enhanced gallery */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem 0;
+}
+
+.gallery img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 15px;
+    transition: all 0.4s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.gallery img:hover {
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .jumbotron {
+        padding: 2rem 1rem;
+    }
+    
+    .blog-post {
+        padding: 1.5rem;
+    }
+    
+    .gallery {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+    
+    .gallery img {
+        height: 200px;
+    }
+}
+
+/* Loading animation */
+.loading {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(13, 110, 253, 0.3);
+    border-radius: 50%;
+    border-top-color: #0d6efd;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 /* Comments section */
@@ -40,24 +402,87 @@ body {
     border-top: 1px solid #eee;
 }
 
-/* Navbar customization */
-.navbar {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Responsive container padding */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
 }
 
-/* Jumbotron customization */
-.jumbotron {
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+/* Table responsiveness */
+.table-responsive {
+    margin: 1rem 0;
 }
 
-/* Listen button styles */
-.btn-outline-primary {
-    border-width: 2px;
+/* Utility classes */
+.text-break {
+    word-break: break-word;
 }
 
-.btn-outline-primary:hover {
-    transform: scale(1.05);
-    transition: transform 0.2s ease-in-out;
+/* Mobile-first media queries */
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+/* Enhanced card styles for blogger list */
+.card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 1.5rem;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    font-weight: 600;
+    margin-top: 1rem;
+    color: #333;
+}
+
+.card-text {
+    color: #666;
+    line-height: 1.6;
+}
+
+.card-text.text-muted {
+    font-size: 0.9rem;
+}
+
+.card-text.text-muted i {
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
 }

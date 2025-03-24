@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <div class="container">
@@ -11,10 +12,16 @@
         {% for blogger in bloggers %}
         <div class="col">
             <div class="card h-100">
-                {% if blogger.profile_pic %}
-                <img src="{{ blogger.profile_pic.url }}" class="card-img-top" alt="{{ blogger.user.username }}" style="height: 200px; object-fit: cover;">
-                {% endif %}
-                <div class="card-body">
+                <div class="text-center mt-4">
+                    <div class="profile-pic-container">
+                        {% if blogger.profile_pic %}
+                            <img src="{{ blogger.profile_pic.url }}" class="profile-pic-large" alt="{{ blogger.user.username }}">
+                        {% else %}
+                            <img src="{% static 'images/default-profile.svg' %}" class="profile-pic-large" alt="{{ blogger.user.username }}">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body text-center">
                     <h5 class="card-title">{{ blogger.user.username }}</h5>
                     <p class="card-text text-muted">
                         <i class="fas fa-pencil-alt"></i> {{ blogger.blog_set.count }} Posts

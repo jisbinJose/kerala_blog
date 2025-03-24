@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0d6efd">
+    <meta name="description" content="Kerala Blog - A platform for sharing traditional Kerala stories and experiences">
     <title>{% block title %}Kerala Blog{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -10,10 +12,13 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">Kerala Blog</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'index' %}">
+                <i class="fas fa-palm-tree me-2"></i>
+                Kerala Blog
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -33,10 +38,29 @@
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> {{ user.username }}
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if user.blogger.profile_pic %}
+                                <img src="{{ user.blogger.profile_pic.url }}" alt="{{ user.username }}" class="profile-pic">
+                            {% else %}
+                                <img src="{% static 'images/default-profile.svg' %}" alt="{{ user.username }}" class="profile-pic">
+                            {% endif %}
+                            <span class="ms-2">{{ user.username }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <div class="profile-dropdown">
+                                    {% if user.blogger.profile_pic %}
+                                        <img src="{{ user.blogger.profile_pic.url }}" alt="{{ user.username }}" class="profile-pic">
+                                    {% else %}
+                                        <img src="{% static 'images/default-profile.svg' %}" alt="{{ user.username }}" class="profile-pic">
+                                    {% endif %}
+                                    <div class="profile-info">
+                                        <div class="username">{{ user.username }}</div>
+                                        <div class="role">Blogger</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="{% url 'blogger-detail' user.blogger.pk %}">
                                     <i class="fas fa-user"></i> My Profile

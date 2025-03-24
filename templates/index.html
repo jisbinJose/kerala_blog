@@ -1,276 +1,38 @@
 {% extends "base.html" %}
-{% load static %}
 
 {% block content %}
-<div class="hero-section">
-    <div class="hero-overlay"></div>
-    <div class="container position-relative" style="z-index: 2;">
-        <div class="jumbotron text-center bg-transparent p-3 p-md-5">
-            <h1 class="display-4 mb-3 mb-md-4 animate__animated animate__fadeInDown">Welcome to Kerala Blog</h1>
-            <p class="lead mb-3 mb-md-4 animate__animated animate__fadeInUp">A platform for sharing traditional Kerala stories and experiences</p>
-            <hr class="my-3 my-md-4 bg-light animate__animated animate__fadeIn">
-            <p class="mb-3 mb-md-4 animate__animated animate__fadeInUp">Explore our collection of {{ num_blogs }} blogs written by {{ num_bloggers }} talented bloggers.</p>
-            <a class="btn btn-primary btn-lg px-4 px-md-5 animate__animated animate__fadeInUp" href="{% url 'blogs' %}" role="button">
-                <i class="fas fa-book-reader me-2"></i>Start Reading
-            </a>
-        </div>
-    </div>
+<div class="jumbotron text-center bg-light p-5 rounded">
+    <h1 class="display-4">Welcome to Kerala Blog</h1>
+    <p class="lead">A platform for sharing traditional Kerala stories and experiences</p>
+    <hr class="my-4">
+    <p>Explore our collection of {{ num_blogs }} blogs written by {{ num_bloggers }} talented bloggers.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'blogs' %}" role="button">Start Reading</a>
 </div>
 
-<div class="container mt-4 mt-md-5">
-    <div class="row g-3 g-md-4">
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="feature-card">
-                <div class="card h-100">
-                    <div class="card-body text-center p-3 p-md-4">
-                        <div class="icon-wrapper mb-3 mb-md-4">
-                            <i class="fas fa-book-open fa-2x fa-md-3x text-primary"></i>
-                        </div>
-                        <h5 class="card-title">Rich Content</h5>
-                        <p class="card-text">Discover authentic Kerala stories, traditions, and experiences shared by our community.</p>
-                    </div>
-                </div>
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Rich Content</h5>
+                <p class="card-text">Discover authentic Kerala stories, traditions, and experiences shared by our community.</p>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="feature-card">
-                <div class="card h-100">
-                    <div class="card-body text-center p-3 p-md-4">
-                        <div class="icon-wrapper mb-3 mb-md-4">
-                            <i class="fas fa-volume-up fa-2x fa-md-3x text-primary"></i>
-                        </div>
-                        <h5 class="card-title">Listen Feature</h5>
-                        <p class="card-text">Every blog post comes with a text-to-speech feature for an enhanced reading experience.</p>
-                    </div>
-                </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Listen Feature</h5>
+                <p class="card-text">Every blog post comes with a text-to-speech feature for an enhanced reading experience.</p>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="feature-card">
-                <div class="card h-100">
-                    <div class="card-body text-center p-3 p-md-4">
-                        <div class="icon-wrapper mb-3 mb-md-4">
-                            <i class="fas fa-users fa-2x fa-md-3x text-primary"></i>
-                        </div>
-                        <h5 class="card-title">Community</h5>
-                        <p class="card-text">Join our growing community of writers and readers passionate about Kerala culture.</p>
-                    </div>
-                </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Community</h5>
+                <p class="card-text">Join our growing community of writers and readers passionate about Kerala culture.</p>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-<style>
-    /* Base styles */
-    :root {
-        --hero-height-mobile: 70vh;
-        --hero-height-tablet: 75vh;
-        --hero-height-desktop: 80vh;
-    }
-
-    /* Hero Section */
-    .hero-section {
-        position: relative;
-        height: var(--hero-height-mobile);
-        background-image: url("{% static 'images/kerala-background.jpg' %}");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        display: flex;
-        align-items: center;
-        color: white;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        overflow: hidden;
-    }
-
-    .hero-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
-        z-index: 1;
-    }
-
-    /* Typography */
-    .display-4 {
-        font-size: calc(1.5rem + 2vw);
-        line-height: 1.2;
-    }
-
-    .lead {
-        font-size: calc(1rem + 0.3vw);
-    }
-
-    /* Feature Cards */
-    .feature-card {
-        transition: transform 0.3s ease;
-        height: 100%;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .icon-wrapper {
-        width: 60px;
-        height: 60px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(var(--bs-primary-rgb), 0.1);
-        border-radius: 50%;
-        transition: all 0.3s ease;
-    }
-
-    .feature-card:hover .icon-wrapper {
-        background: rgba(var(--bs-primary-rgb), 0.2);
-        transform: scale(1.1);
-    }
-
-    .card {
-        border: none;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        height: 100%;
-    }
-
-    .card:hover {
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-title {
-        font-size: calc(1rem + 0.2vw);
-        margin-bottom: 1rem;
-    }
-
-    .card-text {
-        font-size: 0.9rem;
-        line-height: 1.6;
-    }
-
-    /* Responsive Breakpoints */
-    @media (min-width: 576px) {
-        .hero-section {
-            height: var(--hero-height-tablet);
-        }
-        
-        .icon-wrapper {
-            width: 70px;
-            height: 70px;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .hero-section {
-            height: var(--hero-height-desktop);
-        }
-        
-        .icon-wrapper {
-            width: 80px;
-            height: 80px;
-        }
-    }
-
-    @media (min-width: 992px) {
-        .card-text {
-            font-size: 1rem;
-        }
-    }
-
-    /* Touch Device Optimizations */
-    @media (hover: none) {
-        .feature-card:hover {
-            transform: none;
-        }
-        
-        .feature-card:hover .icon-wrapper {
-            transform: none;
-        }
-        
-        .card:hover {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-    }
-
-    /* Print Styles */
-    @media print {
-        .hero-section {
-            height: auto;
-            background: none;
-            color: black;
-            text-shadow: none;
-        }
-
-        .hero-overlay {
-            display: none;
-        }
-
-        .card {
-            break-inside: avoid;
-            box-shadow: none;
-            border: 1px solid #ddd;
-        }
-
-        .feature-card:hover {
-            transform: none;
-        }
-    }
-
-    /* High Contrast Mode */
-    @media (forced-colors: active) {
-        .hero-section {
-            border: 2px solid CanvasText;
-        }
-
-        .card {
-            border: 1px solid CanvasText;
-        }
-    }
-
-    /* Reduced Motion */
-    @media (prefers-reduced-motion: reduce) {
-        .feature-card,
-        .feature-card:hover,
-        .icon-wrapper,
-        .feature-card:hover .icon-wrapper,
-        .card,
-        .card:hover {
-            transition: none;
-            transform: none;
-        }
-    }
-</style>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    // Navbar scroll effect with debounce
-    let scrollTimeout;
-    window.addEventListener('scroll', function() {
-        if (scrollTimeout) {
-            window.cancelAnimationFrame(scrollTimeout);
-        }
-        scrollTimeout = window.requestAnimationFrame(function() {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-    });
-
-    // Handle orientation change
-    window.addEventListener('orientationchange', function() {
-        // Force a reflow to handle orientation changes
-        window.scrollTo(0, 0);
-    });
-</script>
 {% endblock %}

@@ -48,6 +48,13 @@ The translation functionality bridges language barriers for Kerala content:
 
 **Learning:** I gained experience working with external APIs and handling multilingual content. I learned how to optimize audio streaming for better user experience and implement fallback mechanisms when API calls fail.
 
+### Challenge 2: Secure Password Protection
+**Challenge:** Implementing a secure yet user-friendly password protection system for individual blog posts without affecting the overall site performance.
+
+**Solution:** I created a custom middleware that checks for password-protected content and manages authentication through Django's session framework. This approach maintains security while avoiding the overhead of full user authentication for public users.
+
+**Learning:** I deepened my understanding of Django's middleware system and session management. I also learned best practices for securing content without compromising user experience.
+
 ### Challenge 3: AJAX-Based Like System
 **Challenge:** Creating a responsive like system that updates in real-time without page refreshes while preventing duplicate likes.
 

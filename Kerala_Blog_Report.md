@@ -24,13 +24,12 @@ The text-to-speech functionality makes Kerala content more accessible:
 - Provides play/pause controls for better user experience
 - Splits long text into manageable chunks for smoother playback
 
-### 4. Password-Protected Blog Feature
-The password protection system enhances content security:
-- Blog authors can set optional passwords for sensitive or exclusive content
-- Secure password hashing using Django's authentication system
-- Custom access control middleware to verify passwords
-- Session-based authentication to remember authorized users
-- Elegant password prompt interface that maintains site aesthetics
+### 4. Translation Feature
+The translation functionality bridges language barriers for Kerala content:
+- Enables seamless translation between Malayalam and English
+- Intelligently detects the original language of blog content
+- Only shows relevant translation options based on content language
+- Preserves formatting and layout when displaying translated content
 
 ## Screenshots
 

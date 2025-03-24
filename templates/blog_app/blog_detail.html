@@ -11,16 +11,29 @@
                 on {{ blog.post_date|date:"F j, Y" }}
             </p>
             
-            {% if user.is_authenticated and blog.author.user == user %}
-            <div class="mb-3">
-                <a href="{% url 'blog-update' blog.pk %}" class="btn btn-outline-primary">
+            <div class="d-flex align-items-center mb-3">
+                {% if user.is_authenticated %}
+                <form id="likeForm" method="post" action="{% url 'blog-like' blog.id %}">
+                    {% csrf_token %}
+                    <button id="likeButton" type="submit" class="btn {% if is_liked %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                        <i class="fas fa-heart"></i> <span id="likeCount">{{ total_likes }}</span> {% if total_likes == 1 %}Like{% else %}Likes{% endif %}
+                    </button>
+                </form>
+                {% else %}
+                <button class="btn btn-outline-primary" disabled>
+                    <i class="fas fa-heart"></i> {{ total_likes }} {% if total_likes == 1 %}Like{% else %}Likes{% endif %}
+                </button>
+                {% endif %}
+                
+                {% if user.is_authenticated and blog.author.user == user %}
+                <a href="{% url 'blog-update' blog.pk %}" class="btn btn-outline-primary me-2">
                     <i class="fas fa-edit"></i> Edit Blog
                 </a>
                 <a href="{% url 'blog-delete' blog.pk %}" class="btn btn-outline-danger">
                     <i class="fas fa-trash"></i> Delete Blog
                 </a>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
 
         {% if blog.image %}
@@ -45,17 +58,21 @@
                             <i class="fas fa-language"></i> Show Original (Malayalam)
                         </a>
                     {% else %}
-                        <a href="{{ request.path }}?translate=1&to=ml" class="btn btn-outline-secondary">
-                            <i class="fas fa-language"></i> Translate to Malayalam
-                        </a>
-                        <a href="{{ request.path }}?translate=1&to=en" class="btn btn-outline-secondary">
-                            <i class="fas fa-language"></i> Translate to English
-                        </a>
+                        {% if original_language == 'en' %}
+                            <a href="{{ request.path }}?translate=1&to=ml" class="btn btn-outline-secondary">
+                                <i class="fas fa-language"></i> Translate to Malayalam
+                            </a>
+                        {% elif original_language == 'ml' %}
+                            <a href="{{ request.path }}?translate=1&to=en" class="btn btn-outline-secondary">
+                                <i class="fas fa-language"></i> Translate to English
+                            </a>
+                        {% endif %}
                     {% endif %}
                 </div>
+                
+                <audio id="ttsAudio" style="display: none;"></audio>
             </div>
             
-            <audio id="ttsAudio" style="display: none;"></audio>
             <div id="blog-content">
                 {% if translated_content %}
                     {{ translated_content|linebreaks }}
@@ -99,109 +116,116 @@
 
 {% block extra_js %}
 <script>
-const button = document.getElementById('ttsButton');
-const content = document.getElementById('blog-content');
-const audio = document.getElementById('ttsAudio');
-let isPlaying = false;
-
-function createGoogleTTSUrl(text) {
-    // Determine language for TTS
-    {% if target_language == 'ml' %}
-    const ttsLang = 'ml';
-    {% elif target_language == 'en' %}
-    const ttsLang = 'en';
-    {% else %}
-    // Try to detect if content has Malayalam characters
-    const hasMalayalam = /[\u0D00-\u0D7F]/.test(text);
-    const ttsLang = hasMalayalam ? 'ml' : 'en';
-    {% endif %}
-    
-    return `https://translate.google.com/translate_tts?ie=UTF-8&tl=${ttsLang}&client=tw-ob&q=${encodeURIComponent(text)}`;
-}
-
-function splitTextIntoChunks(text, maxLength = 200) {
-    const words = text.split(' ');
-    const chunks = [];
-    let currentChunk = '';
-
-    for (const word of words) {
-        if ((currentChunk + ' ' + word).length <= maxLength) {
-            currentChunk += (currentChunk ? ' ' : '') + word;
-        } else {
-            chunks.push(currentChunk);
-            currentChunk = word;
-        }
-    }
-    if (currentChunk) {
-        chunks.push(currentChunk);
-    }
-    return chunks;
-}
-
-let currentChunkIndex = 0;
-let textChunks = [];
-
-button.addEventListener('click', function() {
-    if (isPlaying) {
-        audio.pause();
-        audio.currentTime = 0;
-        isPlaying = false;
-        currentChunkIndex = 0;
-        button.innerHTML = '<i class="fas fa-volume-up"></i> Listen';
-        return;
-    }
-
-    const text = content.textContent;
-    textChunks = splitTextIntoChunks(text);
-    currentChunkIndex = 0;
-    playNextChunk();
-});
-
-function playNextChunk() {
-    if (currentChunkIndex >= textChunks.length) {
-        isPlaying = false;
-        button.innerHTML = '<i class="fas fa-volume-up"></i> Listen';
-        return;
-    }
-
-    const url = createGoogleTTSUrl(textChunks[currentChunkIndex]);
-    audio.src = url;
-    
-    audio.onplay = function() {
-        isPlaying = true;
-        button.innerHTML = '<i class="fas fa-stop"></i> Stop';
-    };
-
-    audio.onended = function() {
-        currentChunkIndex++;
-        if (isPlaying) {
-            playNextChunk();
-        }
-    };
-
-    audio.onerror = function() {
-        console.error('Error playing audio');
-        isPlaying = false;
-        button.innerHTML = '<i class="fas fa-volume-up"></i> Listen';
-    };
-
-    audio.play().catch(function(error) {
-        console.error('Error starting playback:', error);
-        isPlaying = false;
-        button.innerHTML = '<i class="fas fa-volume-up"></i> Listen';
-    });
-}
-
-// Clean up when leaving the page
-window.addEventListener('beforeunload', function() {
-    if (isPlaying) {
-        audio.pause();
+// Like functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const likeForm = document.getElementById('likeForm');
+    if (likeForm) {
+        likeForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams(new FormData(this))
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Like response:', data);
+                // Update like count
+                document.getElementById('likeCount').textContent = data.total_likes;
+                
+                const likeButton = document.getElementById('likeButton');
+                // Update button appearance
+                if (data.liked) {
+                    likeButton.classList.remove('btn-outline-primary');
+                    likeButton.classList.add('btn-primary');
+                } else {
+                    likeButton.classList.remove('btn-primary');
+                    likeButton.classList.add('btn-outline-primary');
+                }
+                
+                // Update plural form of "Like"
+                const likeText = likeButton.querySelector('i').outerHTML + ' ' + data.total_likes + ' ';
+                likeButton.innerHTML = likeText + (data.total_likes === 1 ? 'Like' : 'Likes');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
     }
 });
 
-// If the URL has a #comments hash, scroll to comments
-if (window.location.hash === '#comments') {
-    document.getElementById('comments').scrollIntoView();
+// Function to get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
+
+// TTS functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const button = document.getElementById('ttsButton');
+    const content = document.getElementById('blog-content');
+    const audio = document.getElementById('ttsAudio');
+    
+    if (button && content && audio) {
+        let isPlaying = false;
+        
+        function createGoogleTTSUrl(text) {
+            // Using a different approach to avoid template/JS conflicts
+            let ttsLang = 'en'; // Default to English
+            
+            {% if target_language == 'ml' %}
+                ttsLang = 'ml';
+            {% elif target_language == 'en' %}
+                ttsLang = 'en';
+            {% else %}
+                // Check for Malayalam characters outside of Django template tags
+                if (/[\u0D00-\u0D7F]/.test(text)) {
+                    ttsLang = 'ml';
+                }
+            {% endif %}
+            
+            return `https://translate.google.com/translate_tts?ie=UTF-8&tl=${ttsLang}&client=tw-ob&q=${encodeURIComponent(text)}`;
+        }
+        
+        button.addEventListener('click', function() {
+            if (!isPlaying) {
+                const text = content.textContent.trim();
+                audio.src = createGoogleTTSUrl(text);
+                audio.play();
+                button.innerHTML = '<i class="fas fa-stop"></i> Stop';
+                isPlaying = true;
+            } else {
+                audio.pause();
+                audio.currentTime = 0;
+                button.innerHTML = '<i class="fas fa-volume-up"></i> Listen';
+                isPlaying = false;
+            }
+        });
+        
+        audio.addEventListener('ended', function() {
+            button.innerHTML = '<i class="fas fa-volume-up"></i> Listen';
+            isPlaying = false;
+        });
+    }
+});
 </script>
 {% endblock %}

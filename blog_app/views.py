@@ -8,7 +8,8 @@ from .forms import CommentForm, UserRegistrationForm, BloggerProfileForm
 from django.utils import timezone
 from django.contrib.auth import login
 from django.contrib import messages
-from .translation_utils import translate_text
+from .translation_utils import translate_text, detect_language
+from django.http import JsonResponse
 
 def register(request):
     if request.method == 'POST':
@@ -51,16 +52,30 @@ def blog_detail(request, pk):
     translated_title = None
     target_language = None
     
+    # Detect the original language of the blog content
+    original_language = detect_language(blog.content)
+    
     if 'translate' in request.GET:
         target_lang = request.GET.get('to', None)
-        translated_title, lang = translate_text(blog.title, target_lang)
-        translated_content, target_language = translate_text(blog.content, target_lang)
+        # Only translate if the target language is different from the original
+        if target_lang != original_language:
+            translated_title, lang = translate_text(blog.title, target_lang)
+            translated_content, target_language = translate_text(blog.content, target_lang)
+    
+    # Check if user liked the blog
+    is_liked = False
+    if request.user.is_authenticated:
+        if blog.likes.filter(id=request.user.id).exists():
+            is_liked = True
     
     context = {
         'blog': blog,
         'translated_title': translated_title,
         'translated_content': translated_content,
-        'target_language': target_language
+        'target_language': target_language,
+        'original_language': original_language,
+        'total_likes': blog.total_likes(),
+        'is_liked': is_liked
     }
     
     return render(request, 'blog_app/blog_detail.html', context)
@@ -113,6 +128,26 @@ def create_comment(request, pk):
     else:
         form = CommentForm()
     return render(request, 'blog_app/comment_form.html', {'form': form, 'blog': blog})
+
+@login_required
+def like_blog(request, pk):
+    blog = get_object_or_404(Blog, pk=pk)
+    
+    # Check if the user already liked the post
+    if blog.likes.filter(id=request.user.id).exists():
+        # User already liked the post, so remove the like
+        blog.likes.remove(request.user)
+        liked = False
+    else:
+        # User hasn't liked the post, so add the like
+        blog.likes.add(request.user)
+        liked = True
+    
+    # Return JSON response for AJAX
+    return JsonResponse({
+        'liked': liked,
+        'total_likes': blog.total_likes()
+    })
 
 class BlogCreate(LoginRequiredMixin, generic.CreateView):
     model = Blog

@@ -22,6 +22,7 @@ class Blog(models.Model):
     content = models.TextField(help_text="Write your blog content here")
     post_date = models.DateTimeField(default=timezone.now)
     image = models.ImageField(upload_to='blog_images/', null=True, blank=True)
+    likes = models.ManyToManyField(User, related_name='blog_likes', blank=True)
 
     class Meta:
         ordering = ['-post_date']
@@ -31,6 +32,9 @@ class Blog(models.Model):
 
     def __str__(self):
         return self.title
+        
+    def total_likes(self):
+        return self.likes.count()
 
 class Comment(models.Model):
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='comments')

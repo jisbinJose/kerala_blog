@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                {% if blogger.profile_pic %}
+                <img src="{{ blogger.profile_pic.url }}" class="card-img-top" alt="{{ blogger.user.username }}">
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="card-title">{{ blogger.user.username }}</h2>
+                    <p class="card-text text-muted">
+                        <i class="fas fa-pencil-alt"></i> {{ blogs|length }} Posts
+                        <br>
+                        <i class="fas fa-calendar-alt"></i> Member since {{ blogger.user.date_joined|date:"F j, Y" }}
+                    </p>
+                    <hr>
+                    <p class="card-text">{{ blogger.bio|linebreaks }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3>Blog Posts</h3>
+                {% if user == blogger.user %}
+                <a href="{% url 'blog-create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Create New Blog
+                </a>
+                {% endif %}
+            </div>
+
+            {% for blog in blogs %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h4 class="card-title">{{ blog.title }}</h4>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-calendar"></i> Posted on {{ blog.post_date|date:"F j, Y" }}
+                            &nbsp;|&nbsp;
+                            <i class="fas fa-comments"></i> {{ blog.comments.count }} Comments
+                        </small>
+                    </p>
+                    {% if blog.image %}
+                    <img src="{{ blog.image.url }}" class="img-fluid rounded mb-3" alt="{{ blog.title }}" style="max-height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <p class="card-text">{{ blog.content|truncatewords:50 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'blog-detail' blog.pk %}" class="btn btn-primary">Read More</a>
+                        {% if user == blogger.user %}
+                        <div>
+                            <a href="{% url 'blog-update' blog.pk %}" class="btn btn-outline-primary">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'blog-delete' blog.pk %}" class="btn btn-outline-danger">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> This blogger hasn't written any posts yet.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

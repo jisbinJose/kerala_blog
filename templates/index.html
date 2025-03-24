@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron text-center bg-light p-5 rounded">
+    <h1 class="display-4">Welcome to Kerala Blog</h1>
+    <p class="lead">A platform for sharing traditional Kerala stories and experiences</p>
+    <hr class="my-4">
+    <p>Explore our collection of {{ num_blogs }} blogs written by {{ num_bloggers }} talented bloggers.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'blogs' %}" role="button">Start Reading</a>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Rich Content</h5>
+                <p class="card-text">Discover authentic Kerala stories, traditions, and experiences shared by our community.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Listen Feature</h5>
+                <p class="card-text">Every blog post comes with a text-to-speech feature for an enhanced reading experience.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Community</h5>
+                <p class="card-text">Join our growing community of writers and readers passionate about Kerala culture.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
